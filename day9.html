@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 9 - Background Color Changer</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            /* Added smooth transition for the background color challenge */
+            transition: background-color 0.4s ease-in-out;
+            background-color: #100c24; 
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(196, 181, 253, 0.25);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            font-size: 32px;
+            color: #d8b4fe;
+            margin-bottom: 10px;
+        }
+
+        .color-display {
+            font-size: 16px;
+            color: #c4b5fd;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        #color-name {
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .color-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .color-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Specific Button Colors & Hover Glows */
+        #btn-red {
+            background: #ef4444;
+        }
+        #btn-red:hover {
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        #btn-green {
+            background: #22c55e;
+        }
+        #btn-green:hover {
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4);
+        }
+
+        #btn-blue {
+            background: #3b82f6;
+        }
+        #btn-blue:hover {
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        #btn-yellow {
+            background: #eab308;
+            color: #111827;
+        }
+        #btn-yellow:hover {
+            box-shadow: 0 5px 15px rgba(234, 179, 8, 0.4);
+        }
+
+        #btn-random {
+            background: linear-gradient(90deg, #8b5cf6, #c084fc);
+        }
+        #btn-random:hover {
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .reset-btn {
+            padding: 10px 30px;
+            border: 1px solid #a78bfa;
+            border-radius: 25px;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.3s;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .reset-btn:hover {
+            background: rgba(167, 139, 250, 0.16);
+            box-shadow: 0 5px 15px rgba(167, 139, 250, 0.2);
+        }
+
+        footer {
+            text-align: center;
+            color: #a78bfa;
+            margin-top: 40px;
+            font-size: 13px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 500px) {
+            header h1 {
+                font-size: 26px;
+            }
+            .color-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Background Color Changer</h1>
+            <div class="color-display">
+                Current Color: <span id="color-name">Default Dark</span>
+            </div>
+        </header>
+
+        <div class="buttons">
+            <button id="btn-red" class="color-btn">Red</button>
+            <button id="btn-green" class="color-btn">Green</button>
+            <button id="btn-blue" class="color-btn">Blue</button>
+            <button id="btn-yellow" class="color-btn">Yellow</button>
+            <button id="btn-random" class="color-btn">✨ Random Color</button>
+        </div>
+
+        <button id="btn-reset" class="reset-btn">Reset to Default</button>
+    </div>
+
+    <footer>
+        <p>Day 9 Frontend Practical | HTML • CSS • JavaScript</p>
+        <p>Designed with ❤️ by Gurwinder Singh</p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const body = document.body;
+        const colorNameDisplay = document.getElementById('color-name');
+        
+        // Store the initial default color
+        const defaultColor = '#100c24';
+
+        // Reusable function to change the background and update the label text
+        function changeBackground(colorHex, colorLabel) {
+            body.style.backgroundColor = colorHex;
+            colorNameDisplay.textContent = colorLabel;
+        }
+
+        // Add event listeners to the fixed color buttons
+        document.getElementById('btn-red').addEventListener('click', () => {
+            changeBackground('#ef4444', 'Red');
+        });
+
+        document.getElementById('btn-green').addEventListener('click', () => {
+            changeBackground('#22c55e', 'Green');
+        });
+
+        document.getElementById('btn-blue').addEventListener('click', () => {
+            changeBackground('#3b82f6', 'Blue');
+        });
+
+        document.getElementById('btn-yellow').addEventListener('click', () => {
+            changeBackground('#eab308', 'Yellow');
+        });
+
+        // Optional Challenge: Reset button to restore the original color
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            changeBackground(defaultColor, 'Default Dark');
+        });
+
+        // Optional Challenge: Random Color generator
+        document.getElementById('btn-random').addEventListener('click', () => {
+            // Generate a random hex color code
+            const randomHex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+            changeBackground(randomHex, randomHex.toUpperCase());
+        });
+    </script>
+
+</body>
+</html>
