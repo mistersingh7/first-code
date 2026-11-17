@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 10 - Simple Counter App</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #100c24, #241344, #111827);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(196, 181, 253, 0.25);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            font-size: 32px;
+            color: #d8b4fe;
+            margin-bottom: 25px;
+        }
+
+        .counter-display {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Number Display Styling with transition for color changes */
+        #counter-value {
+            font-size: 80px;
+            font-weight: bold;
+            transition: color 0.3s ease-in-out;
+            color: white; /* Default zero color */
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            flex: 1 1 calc(50% - 15px);
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-decrease {
+            background: #ef4444;
+        }
+        .btn-decrease:hover {
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-increase {
+            background: #22c55e;
+        }
+        .btn-increase:hover {
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-increase-5 {
+            background: linear-gradient(90deg, #8b5cf6, #c084fc);
+        }
+        .btn-increase-5:hover {
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 1px solid #a78bfa;
+            color: #e9d5ff;
+        }
+        .btn-reset:hover {
+            background: rgba(167, 139, 250, 0.16);
+            box-shadow: 0 5px 15px rgba(167, 139, 250, 0.2);
+        }
+
+        .options {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #c4b5fd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .options input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: #a78bfa;
+        }
+
+        footer {
+            text-align: center;
+            color: #a78bfa;
+            margin-top: 40px;
+            font-size: 13px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 450px) {
+            #counter-value {
+                font-size: 60px;
+            }
+            .btn {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <!-- Core Requirement: Heading[cite: 3] -->
+            <h1>My Counter App</h1>
+        </header>
+
+        <div class="counter-display">
+            <!-- Core Requirement: Counter starting at 0[cite: 3] -->
+            <span id="counter-value">0</span>
+        </div>
+
+        <div class="buttons">
+            <!-- Core Requirement: 3 primary buttons[cite: 3] -->
+            <button id="btn-decrease" class="btn btn-decrease">-1 Decrease</button>
+            <button id="btn-increase" class="btn btn-increase">+1 Increase</button>
+            <!-- Optional Challenge: +5 Button[cite: 4] -->
+            <button id="btn-increase-5" class="btn btn-increase-5">+5 Increase</button>
+            <button id="btn-reset" class="btn btn-reset">Reset</button>
+        </div>
+
+        <label class="options">
+            <!-- Optional Challenge: Prevent below 0 logic[cite: 4] -->
+            <input type="checkbox" id="prevent-negative"> 
+            Prevent counter from going below 0
+        </label>
+    </div>
+
+    <footer>
+        <p>Day 10 Frontend Practical | HTML • CSS • JavaScript</p>
+        <p>Designed with ❤️ by Gurwinder Singh</p>
+    </footer>
+
+    <script>
+        // Set up variables for DOM manipulation[cite: 3]
+        let count = 0;
+        const valueDisplay = document.getElementById('counter-value');
+        const preventNegativeCheckbox = document.getElementById('prevent-negative');
+
+        // Function to update the number on screen and handle colors[cite: 3]
+        function updateDisplay() {
+            valueDisplay.textContent = count;
+
+            // Optional Challenge: Change color based on value[cite: 4]
+            if (count > 0) {
+                valueDisplay.style.color = "#4ade80"; // Green for positive
+            } else if (count < 0) {
+                valueDisplay.style.color = "#f87171"; // Red for negative
+            } else {
+                valueDisplay.style.color = "white";   // White for zero
+            }
+        }
+
+        // Increase by 1[cite: 3]
+        document.getElementById('btn-increase').addEventListener('click', () => {
+            count++;
+            updateDisplay();
+        });
+
+        // Decrease by 1[cite: 4]
+        document.getElementById('btn-decrease').addEventListener('click', () => {
+            // Check optional challenge condition[cite: 4]
+            if (preventNegativeCheckbox.checked && count === 0) {
+                return; // Stop function if at 0 and checkbox is checked
+            }
+            count--;
+            updateDisplay();
+        });
+
+        // Optional Challenge: Increase by 5[cite: 4]
+        document.getElementById('btn-increase-5').addEventListener('click', () => {
+            count += 5;
+            updateDisplay();
+        });
+
+        // Reset to 0[cite: 4]
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            count = 0;
+            updateDisplay();
+        });
+    </script>
+
+</body>
+</html>
