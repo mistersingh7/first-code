@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 11 - Simple Image Gallery</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #100c24, #241344, #111827);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(196, 181, 253, 0.25);
+            border-radius: 20px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 720px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        header {
+            margin-bottom: 22px;
+        }
+
+        header h1 {
+            font-size: 32px;
+            color: #d8b4fe;
+            margin-bottom: 10px;
+        }
+
+        .image-counter {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.25);
+            color: #c4b5fd;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .gallery-frame {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Fixed image dimensions with rounded corners */
+        .gallery-img {
+            width: 100%;
+            max-width: 620px;
+            height: 360px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 2px solid rgba(167, 139, 250, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            transition: opacity 0.3s ease;
+        }
+
+        .caption {
+            margin-top: 14px;
+            color: #e9d5ff;
+            font-size: 16px;
+            font-weight: 500;
+            min-height: 24px;
+        }
+
+        /* Navigation Dots */
+        .dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(196, 181, 253, 0.3);
+            cursor: pointer;
+            transition: transform 0.25s, background 0.25s;
+        }
+
+        .dot:hover {
+            background: rgba(196, 181, 253, 0.7);
+            transform: scale(1.2);
+        }
+
+        .dot.active {
+            background: #a78bfa;
+            transform: scale(1.3);
+            box-shadow: 0 0 10px rgba(167, 139, 250, 0.7);
+        }
+
+        /* Gallery Control Buttons */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+            min-width: 130px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-nav {
+            background: linear-gradient(90deg, #8b5cf6, #c084fc);
+        }
+
+        .btn-nav:hover {
+            box-shadow: 0 5px 18px rgba(168, 85, 247, 0.45);
+        }
+
+        .btn-slideshow {
+            background: transparent;
+            border: 1px solid #a78bfa;
+            color: #e9d5ff;
+        }
+
+        .btn-slideshow:hover {
+            background: rgba(167, 139, 250, 0.16);
+            box-shadow: 0 5px 15px rgba(167, 139, 250, 0.25);
+        }
+
+        .btn-slideshow.playing {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+
+        .btn-slideshow.playing:hover {
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        footer {
+            text-align: center;
+            color: #a78bfa;
+            margin-top: 35px;
+            font-size: 13px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 18px;
+            }
+
+            header h1 {
+                font-size: 26px;
+            }
+
+            .gallery-img {
+                height: 230px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>My Image Gallery</h1>
+            <div class="image-counter" id="image-counter">Image 1 of 4</div>
+        </header>
+
+        <div class="gallery-frame">
+            <img id="gallery-img" class="gallery-img" src="" alt="Gallery Image">
+            <p id="image-caption" class="caption"></p>
+        </div>
+
+        <div class="dots" id="dots-container"></div>
+
+        <div class="controls">
+            <button id="btn-prev" class="btn btn-nav">← Previous</button>
+            <button id="btn-slideshow" class="btn btn-slideshow">▶ Play Slideshow</button>
+            <button id="btn-next" class="btn btn-nav">Next →</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Day 11 Frontend Practical | HTML • CSS • JavaScript</p>
+        <p>Designed with ❤️ by Gurwinder Singh</p>
+    </footer>
+
+    <script>
+        // Gallery image data (4 images with captions)
+        const images = [
+            {
+                src: "https://picsum.photos/id/1018/800/500",
+                caption: "Misty Mountain Valley at Dawn"
+            },
+            {
+                src: "https://picsum.photos/id/1015/800/500",
+                caption: "Calm River Flowing Through the Fjord"
+            },
+            {
+                src: "https://picsum.photos/id/1039/800/500",
+                caption: "Hidden Waterfall in a Green Forest"
+            },
+            {
+                src: "https://picsum.photos/id/1043/800/500",
+                caption: "Pine Woods Under a Quiet Sky"
+            }
+        ];
+
+        // DOM elements
+        const galleryImg = document.getElementById("gallery-img");
+        const imageCaption = document.getElementById("image-caption");
+        const imageCounter = document.getElementById("image-counter");
+        const dotsContainer = document.getElementById("dots-container");
+        const prevBtn = document.getElementById("btn-prev");
+        const nextBtn = document.getElementById("btn-next");
+        const slideshowBtn = document.getElementById("btn-slideshow");
+
+        let currentIndex = 0;
+        let slideshowInterval = null;
+
+        // Create navigation dots dynamically
+        function createDots() {
+            images.forEach((_, index) => {
+                const dot = document.createElement("button");
+                dot.classList.add("dot");
+                dot.setAttribute("aria-label", `Go to image ${index + 1}`);
+                dot.addEventListener("click", () => {
+                    currentIndex = index;
+                    updateGallery();
+                    resetSlideshowTimer();
+                });
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        // Update displayed image, caption, counter, and active dot
+        function updateGallery() {
+            const currentImage = images[currentIndex];
+            galleryImg.src = currentImage.src;
+            galleryImg.alt = currentImage.caption;
+            imageCaption.textContent = currentImage.caption;
+            imageCounter.textContent = `Image ${currentIndex + 1} of ${images.length}`;
+
+            const allDots = document.querySelectorAll(".dot");
+            allDots.forEach((dot, index) => {
+                dot.classList.toggle("active", index === currentIndex);
+            });
+        }
+
+        // Show next image and loop back to the first image after the last one
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateGallery();
+        }
+
+        // Show previous image and loop to the last image from the first one
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateGallery();
+        }
+
+        // Reset slideshow interval when user navigates manually
+        function resetSlideshowTimer() {
+            if (slideshowInterval) {
+                clearInterval(slideshowInterval);
+                slideshowInterval = setInterval(nextImage, 3000);
+            }
+        }
+
+        // Play / Pause slideshow toggle
+        function toggleSlideshow() {
+            if (slideshowInterval) {
+                clearInterval(slideshowInterval);
+                slideshowInterval = null;
+                slideshowBtn.textContent = "▶ Play Slideshow";
+                slideshowBtn.classList.remove("playing");
+            } else {
+                slideshowInterval = setInterval(nextImage, 3000);
+                slideshowBtn.textContent = "⏸ Pause Slideshow";
+                slideshowBtn.classList.add("playing");
+            }
+        }
+
+        // Event listeners
+        nextBtn.addEventListener("click", () => {
+            nextImage();
+            resetSlideshowTimer();
+        });
+
+        prevBtn.addEventListener("click", () => {
+            prevImage();
+            resetSlideshowTimer();
+        });
+
+        slideshowBtn.addEventListener("click", toggleSlideshow);
+
+        // Initialize gallery on page load
+        createDots();
+        updateGallery();
+    </script>
+
+</body>
+</html>
